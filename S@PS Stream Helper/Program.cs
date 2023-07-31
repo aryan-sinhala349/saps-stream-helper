@@ -2,60 +2,32 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
-public class Program
+namespace SAPS
 {
-    private static HttpClient s_Client = new HttpClient();
-
-    private struct Tournament
+    public class Program
     {
-        public int id;
-        public string? name;
-    }
+        public static async Task Main(string[] args)
+        {
+            Console.Write("Please input your auth token: ");
+            Globals.AuthToken = Console.ReadLine();
 
-    public static async Task Main(string[] args)
-    {
-        const string endpoint = "https://api.start.gg/gql/alpha";
-        Console.Write("Please input your auth token: ");
-        string? authToken = Console.ReadLine();
+            Console.Write("Please input your desired slug: ");
+            Globals.TournamentSlug = Console.ReadLine();
+            Globals.Client.DefaultRequestHeaders.Add("Authorization", $"Bearer {Globals.AuthToken}");
 
-        Console.Write("Please input your desired slug: ");
-        string? slug = Console.ReadLine();
+            Tournament? currentTournament = new Tournament(Globals.TournamentSlug);
 
-        const string query = @"
-            query TournamentName($slug: String!)
+            for (int i = 0; i < currentTournament.Events.Length; i++)
             {
-                tournament(slug: $slug)
-                {
-                    id
-                    name
-                }
+                Event currentEvent = new Event(currentTournament.Events[i]);
+
+                Console.WriteLine($"{currentEvent.Name} has {currentEvent.NumEntrants} entrants");
+
+                for (int j = 0; j < currentEvent.Entrants.Length; j++)
+                    Console.WriteLine($" - {currentEvent.Entrants[j]}");
+
+                Console.WriteLine();
             }
-        ";
-
-        var variables = new
-        {
-            slug = slug
-        };
-
-        s_Client.DefaultRequestHeaders.Add("Authorization", $"Bearer {authToken}");
-
-        var request = new
-        {
-            query,
-            variables
-        };
-
-        string jsonRequest = JsonSerializer.Serialize(request);
-        StringContent content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
-        HttpResponseMessage response = await s_Client.PostAsync(endpoint, content);
-
-        if (response.IsSuccessStatusCode)
-        {
-            string jsonResponse = await response.Content.ReadAsStringAsync();
-
-            JsonNode jsonQuery = JsonNode.Parse(jsonResponse);
-            JsonNode data = jsonQuery["data"];
-            Console.WriteLine(data);
         }
     }
 }
