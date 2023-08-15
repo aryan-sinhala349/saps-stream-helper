@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SAPS.MainPage"
+             Title="">
+    <VerticalStackLayout VerticalOptions="CenterAndExpand"
+                         Margin="300, 0, 300, 0">
+        <Label Text="S@PS Stream Helper"
+               HorizontalOptions="Center" 
+               FontSize="Header" 
+               Margin="20"/>
+        <Entry x:Name="m_AuthToken"
+               Placeholder="Auth Token" 
+               MaxLength="32"
+               Margin="20"
+               IsPassword="True" />
+        <Button Text="Submit"
+                VerticalOptions="Center" 
+                HorizontalOptions="Center" 
+                Margin="20"
+                Clicked="OnSubmitPressed" />
+    </VerticalStackLayout>
+</ContentPage>

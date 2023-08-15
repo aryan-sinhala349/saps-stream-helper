@@ -116,6 +116,10 @@ namespace SAPS
                 for (int i = 0; i < NumEntrants; i++)
                     Entrants[i] = (int)jsonEntrantsArray[i]["id"];
             }
+
+            {
+
+            }
         }
     }
 }
